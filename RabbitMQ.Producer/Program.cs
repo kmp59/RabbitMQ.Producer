@@ -20,17 +20,7 @@ namespace RabbitMQ.Producer
 
             using (var channel = conn.CreateModel())
             {
-                var arguments = new Dictionary<string, object> { };
-                arguments.Add("x-queue-type", "quorum");
-
-                channel.QueueDeclare("demo-queue", durable: true, exclusive: false, autoDelete: false, arguments: arguments);
-                for(int i = 0; i < 10; i++)
-                {
-                    var message = new { Name = "Producer", Message = $"Hello+{i}" };
-                    var body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(message));
-
-                    channel.BasicPublish(exchange: "", routingKey: "demo-queue", basicProperties: null, body: body);
-                }
+                DirectExchangePublisher.Publish(channel);
             }
         }
     }
